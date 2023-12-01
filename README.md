@@ -16,3 +16,7 @@ I will not be using AI to solve the challenges, but I may use it to quickly look
 ## Three Languages
 
 There are three folders. I plan to write solutions in Typescript, Go, and Rust. I am most familiar with Typescript, and I have written a few smaller projects using Go. I have been reading about Rust for over a year, but I have not taken the plunge to build any projects. So, I am excited to get to know these languages better by solving some tricky, fun problems.  
+
+# Challenges
+
+[day1 typescript](https://github.com/guitarkeegan/advent-of-code-2023/tree/main/ts/challenge-start)
