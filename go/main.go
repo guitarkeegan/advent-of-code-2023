@@ -1,7 +1,9 @@
 package main
 
-import "fmt"
+import (
+	day1 "advent-of-code.com/2023/day-1"
+)
 
 func main() {
-	fmt.Println("Hello from main")
+	day1.SumCalibration()
 }
