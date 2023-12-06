@@ -3,6 +3,8 @@ import * as fs from "fs";
 function seedMap() {
     const input = getInput()
 
+    let soil, fert, water, light, temp, humidity, location;
+
     const seeds = input[0].replace(/seeds:\s/, "").split(/\s/).map((num) => Number(num));
 
     const seedToSoilArr = arrFactor(input, "seed-to-soil map:");
@@ -12,27 +14,37 @@ function seedMap() {
     const lightToTempArr = arrFactor(input, "light-to-temperature map:");
     const tempToHumidityArr = arrFactor(input, "temperature-to-humidity map:");
     const humidityToLocationArr = arrFactor(input, "humidity-to-location map:");
+
+    let smallestLoc = Infinity;
+
+    for (let seed of seeds) {
+        soil = getNextValue(seed, seedToSoilArr);
+        fert = getNextValue(soil, soilToFertilizerArr);
+        water = getNextValue(fert, fertilizerToWaterArr);
+        light = getNextValue(water, waterToLightArr);
+        temp = getNextValue(light, lightToTempArr);
+        humidity = getNextValue(temp, tempToHumidityArr);
+        location = getNextValue(humidity, humidityToLocationArr);
+        smallestLoc = Math.min(smallestLoc, location);
+    }
+
+    return smallestLoc;
+
 }
 
 function getInput() {
-    return fs.readFileSync("./input-test-day5")
+    return fs.readFileSync("./input-day5")
         .toString()
         .split("\n");
 }
 
-function arrToMap(inputs: number[][]): Map<number, number> {
-    const out = new Map<number, number>();
-    for (let i = 0; i < inputs.length; i++) {
-        let start = inputs[i][1];
-        let end = inputs[i][1] + inputs[i][2];
-        let finish = inputs[i][0];
-        while (start < end) {
-            out.set(start, finish);
-            start++;
-            finish++;
+function getNextValue(needle: number, haystack: number[][]): number {
+    for (let line of haystack){
+        if (needle > line[1] && needle < line[1] + line[2]){
+            return (needle - line[1]) + line[0];
         }
     }
-    return out;
+    return needle;
 }
 
 function arrFactor(input: string[], mapCategory: string): number[][] {
