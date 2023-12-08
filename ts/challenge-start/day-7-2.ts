@@ -9,23 +9,23 @@ function camelCards() {
 
 function multiplyRanks(hands: (string | number)[][]): number {
     let out = 0;
-    for (let i=0;i<hands.length;i++){
+    for (let i = 0; i < hands.length; i++) {
         out += hands[i][1] as number * (i + 1);
     }
     return out;
 }
 
-function quickSort(hands: (string | number)[][], start: number, end: number){
+function quickSort(hands: (string | number)[][], start: number, end: number) {
 
-    if (end - start + 1 <= 1){
+    if (end - start + 1 <= 1) {
         return hands;
     }
 
     const pivot = hands[end];
 
     let leftPointer = start;
-    for (let i=start;i<end;i++){
-        if (lessThanPivot(hands[i][0] as string, pivot[0] as string)){
+    for (let i = start; i < end; i++) {
+        if (lessThanPivot(hands[i][0] as string, pivot[0] as string)) {
             let tmp = hands[leftPointer];
             hands[leftPointer] = hands[i];
             hands[i] = tmp;
@@ -43,7 +43,7 @@ function quickSort(hands: (string | number)[][], start: number, end: number){
 }
 
 function getInput() {
-    return fs.readFileSync("./input-test-day7")
+    return fs.readFileSync("./input-day7")
         .toString()
         .split("\n")
         .map(line => {
@@ -60,6 +60,61 @@ function checkHandType(hand: string): number {
             cardMap.set(card, cardMap.get(card) as number + 1);
         } else {
             cardMap.set(card, 1);
+        }
+    }
+    // get jokers
+    let jokers = 0;
+    if (cardMap.has("J")) {
+        jokers = cardMap.get("J") as number;
+        cardMap.delete("J");
+    }
+    // seperate logic if jokers
+    if (jokers > 0) {
+        if (jokers > 3) {
+            return 6;
+        }
+        // get highest pairs
+        let highestVal = "";
+        let highestPairs = 0;
+        cardMap.forEach((val, key) => {
+            if (highestPairs < val){
+                highestPairs = val;
+                highestVal = key;
+            }
+        })
+        if (highestPairs === 4){
+            return 6;
+        }
+        if (highestPairs === 3){
+            return 5;
+        }
+        if (highestPairs === 2){
+            // check if two pair
+            let numOfPairs = 0;
+            cardMap.forEach((val, key) => {
+                if (val === 2){
+                    numOfPairs++;
+                }
+            });
+            if (numOfPairs === 2){
+                return 4;
+            }
+            if (jokers === 1){
+                return 3;
+            } else if (jokers === 2){
+                return 5;
+            } else if (jokers === 3){
+                return 6;
+            }
+        }
+        if (jokers === 1){
+            return 2;
+        }
+        if (jokers === 2){
+            return 3;
+        }
+        if (jokers === 3){
+            return 5;
         }
     }
     if (cardMap.size === 1) {
@@ -103,6 +158,7 @@ function checkHandType(hand: string): number {
 
 function cardScore(card: string): number {
     const valueMap = {
+        "J": 1,
         "2": 2,
         "3": 3,
         "4": 4,
@@ -112,10 +168,9 @@ function cardScore(card: string): number {
         "8": 8,
         "9": 9,
         "T": 10,
-        "J": 11,
-        "Q": 12,
-        "K": 13,
-        "A": 14,
+        "Q": 11,
+        "K": 12,
+        "A": 13,
     }
     return valueMap[card as keyof typeof valueMap];
 }
@@ -124,9 +179,9 @@ function lessThanPivot(hand1: string, pivot: string): boolean {
     const hand1Type = checkHandType(hand1);
     const pivotType = checkHandType(pivot);
     const sameType = hand1Type === pivotType;
-    if (sameType){
-        for (let i=0;i<hand1.length;i++){
-            if (cardScore(hand1[i]) !== cardScore(pivot[i])){
+    if (sameType) {
+        for (let i = 0; i < hand1.length; i++) {
+            if (cardScore(hand1[i]) !== cardScore(pivot[i])) {
                 if (cardScore(hand1[i]) > cardScore(pivot[i])) {
                     return false;
                 }
