@@ -1,9 +1,14 @@
 package main
 
 import (
-	day1 "advent-of-code.com/2023/day-1"
+	"fmt"
+
+	"advent-of-code.com/2023/day8"
 )
 
 func main() {
-	day1.SumCalibration()
+	str, _ := day8.HauntedWaistland()
+
+	fmt.Println(str)
+
 }
