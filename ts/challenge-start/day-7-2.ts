@@ -74,19 +74,17 @@ function checkHandType(hand: string): number {
             return 6;
         }
         // get highest pairs
-        let highestVal = "";
         let highestPairs = 0;
         cardMap.forEach((val, key) => {
             if (highestPairs < val){
                 highestPairs = val;
-                highestVal = key;
             }
         })
         if (highestPairs === 4){
             return 6;
         }
         if (highestPairs === 3){
-            return 5;
+            return jokers === 2 ? 6 : 5;
         }
         if (highestPairs === 2){
             // check if two pair
@@ -108,7 +106,7 @@ function checkHandType(hand: string): number {
             }
         }
         if (jokers === 1){
-            return 2;
+            return 1;
         }
         if (jokers === 2){
             return 3;
