@@ -35,11 +35,11 @@ function hauntedWasteland(){
         if (dir === "L"){
             // go left
             let n = adjacencyList.get(curr);
-            n ? curr = n[1] : "";
+            n ? curr = n[0] : "";
         } else {
             // go right
             let n = adjacencyList.get(curr);
-            n ? curr = n[2] : "";
+            n ? curr = n[1] : "";
         }
         steps++;
         idx++;
@@ -51,7 +51,7 @@ function hauntedWasteland(){
 }
 
 function getInput(){
-    return fs.readFileSync("./input-test-day8")
+    return fs.readFileSync("./input-day8")
     .toString()
     .split("\n");
 }
