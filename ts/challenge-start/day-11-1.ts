@@ -11,10 +11,19 @@ function cosmicExp(): number {
 
     const points = getPoints(input)
 
-    console.log(input)
-    console.log(points);
+    return sumAllPaths(points);
+}
 
-    return 0;
+function sumAllPaths(points: number[][]): number {
+    let out = 0;
+    let count = 0;
+    for (let i=0;i<points.length;i++){
+        for (let j=i+1;j<points.length;j++){
+            out += (Math.abs(points[j][0] - points[i][0])) + Math.abs((points[j][1] - points[i][1]));
+        }
+    }
+
+    return out;
 }
 
 function getPoints(input: string[][]): number[][] {
@@ -43,14 +52,18 @@ function expandUniverse(input: string[][], count: number): void {
             }
         }
     }
+    let offSet = 0;
     rows.forEach((row, i) => {
         if (row === false) {
-            insertRow(input, i);
+            insertRow(input, i + offSet);
+            offSet++;
         }
     })
+    offSet = 0;
     cols.forEach((col, i) => {
         if (col === false) {
-            insertCol(input, i);
+            insertCol(input, i + offSet);
+            offSet++;
         }
     })
 }
@@ -67,7 +80,7 @@ function insertRow(input: string[][], idx: number): void {
 }
 
 function getInput(): string[][] {
-    return fs.readFileSync("./input-test-day11")
+    return fs.readFileSync("./input-day11")
         .toString()
         .split("\n")
         .map(line => {
@@ -75,4 +88,4 @@ function getInput(): string[][] {
         });
 }
 
-cosmicExp();
+console.log(cosmicExp());
