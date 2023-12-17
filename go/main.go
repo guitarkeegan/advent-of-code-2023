@@ -1,14 +1,7 @@
 package main
 
-import (
-	"fmt"
-
-	cosmic "advent-of-code.com/2023/day11"
-)
+import gears "advent-of-code.com/2023/day12"
 
 func main() {
-	// str, _ := day8.HauntedWaistland()
-	num := cosmic.Cosmic()
-
-	fmt.Println(num)
+	gears.HotSprings()
 }
