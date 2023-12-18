@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
+	"strings"
 )
 
 func HotSprings() {
@@ -16,7 +17,6 @@ func getInput() {
 	if err != nil {
 		fmt.Println(err)
 	}
-	println("dir is: ", dir)
 	file, err := os.Open(filepath.Join(dir, "day12/input-test-day12"))
 	if err != nil {
 		fmt.Println(err)
@@ -24,11 +24,20 @@ func getInput() {
 
 	defer file.Close()
 
+	var lines [][]string
+
 	scanner := bufio.NewScanner(file)
 	for scanner.Scan() {
-		fmt.Println(scanner.Text())
+		text := scanner.Text()
+		arr := strings.Split(text, " ")
+		for _, val := range arr {
+			fmt.Println(val)
+			newArr := strings.Fields(val)
+			lines = append(lines, newArr)
+		}
 	}
 	if err := scanner.Err(); err != nil {
 		fmt.Println("error reading lines", err)
 	}
+	fmt.Println(lines)
 }
