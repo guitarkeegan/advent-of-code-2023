@@ -1,7 +1,14 @@
 package main
 
-import gears "advent-of-code.com/2023/day12"
+import (
+	"fmt"
+	"time"
+)
 
 func main() {
-	gears.HotSprings()
+
+	startTime := time.Now()
+	//	fmt.Printf("day1-1 answer is: %v\n", Trebuchet())
+	duration := time.Since(startTime)
+	fmt.Printf("day1-1 took %v to complete\n", duration)
 }

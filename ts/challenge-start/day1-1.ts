@@ -1,13 +1,4 @@
 import * as fs from "fs"
-// For example:
-
-// 1abc2
-// pqr3stu8vwx
-// a1b2c3d4e5f
-// treb7uchet
-// In this example, the calibration values of these four lines are 12, 38, 15, and 77. Adding these together produces 142.
-
-// Consider your entire calibration document. What is the sum of all of the calibration values?
 
 function sumCalibrationValues(): number {
 
@@ -18,13 +9,13 @@ function sumCalibrationValues(): number {
     for (let line of input) {
         let tens = "";
         let ones = "";
-        for (let l=0;l<line.length;l++){
+        for (let l = 0; l < line.length; l++) {
             if (re.test(line[l])) {
                 tens = line[l];
                 break;
             }
         }
-        for (let l=line.length;l>=0;l--){
+        for (let l = line.length; l >= 0; l--) {
             if (re.test(line[l])) {
                 ones = line[l];
                 break;
@@ -34,11 +25,14 @@ function sumCalibrationValues(): number {
     }
 
     return total;
-    
+
 }
 
 function getInput(path: string) {
     return fs.readFileSync(path, "utf-8");
 }
 
-console.log(sumCalibrationValues());
+console.time("sumCalibrationValues");
+//console.log(sumCalibrationValues());
+sumCalibrationValues();
+console.timeEnd("sumCalibrationValues");
