@@ -1,6 +1,7 @@
 package main
 
 import (
+	"advent-of-code.com/2023/algos"
 	"bufio"
 	"fmt"
 	"io"
@@ -15,6 +16,15 @@ func Trebuchet() int {
 	ch2 := make(chan int)
 	go getInput(ch)
 	go getNums(ch, ch2)
+	return sumNums(ch2)
+}
+
+// --- Day 1: Trebuchet part 2 ---
+func Trebuchet2() int {
+	ch := make(chan string)
+	ch2 := make(chan int)
+	go getInput(ch)
+	go getNums2(ch, ch2)
 	return sumNums(ch2)
 }
 
@@ -46,6 +56,51 @@ func getNums(upstream chan string, downstream chan int) {
 		realNum, _ := strconv.Atoi(num)
 		downstream <- realNum
 		num = ""
+	}
+	close(downstream)
+}
+
+func getNums2(upstream chan string, downstream chan int) {
+	numMap := map[string]string{
+		"one":   "1",
+		"two":   "2",
+		"three": "3",
+		"four":  "4",
+		"five":  "5",
+		"six":   "6",
+		"seven": "7",
+		"eight": "8",
+		"nine":  "9",
+	}
+	trie := algos.NewTrie()
+	trie.SeedTrieNumbers()
+	var num []string
+	candidate := ""
+	count := 0
+	for line := range upstream {
+		// get first int
+		for i, char := range line {
+			if unicode.IsDigit(char) {
+				num = append(num, string(char))
+			} else {
+				// Trie
+				count = i
+				candidate = string(char)
+				for trie.StartsWith(candidate) {
+					candidate += string(char)
+					if trie.Search(candidate) {
+						num = append(num, numMap[candidate])
+						candidate = ""
+						break
+					}
+					count++
+				}
+				candidate = ""
+			}
+		}
+		newNum := num[0] + num[len(num)-1]
+		realNum, _ := strconv.Atoi(newNum)
+		downstream <- realNum
 	}
 	close(downstream)
 }
