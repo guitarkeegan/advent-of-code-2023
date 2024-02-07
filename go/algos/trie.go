@@ -1,5 +1,7 @@
 package algos
 
+import "fmt"
+
 type TrieNode struct {
 	Children [26]*TrieNode
 	IsEnd    bool
@@ -46,6 +48,7 @@ func (n *Trie) Search(word string) bool {
 func (n *Trie) StartsWith(word string) bool {
 	cur := n.Root
 	for i := range word {
+		fmt.Print(string(word) + " ")
 		idx := word[i] - 'a'
 		if cur.Children[idx] == nil {
 			return false

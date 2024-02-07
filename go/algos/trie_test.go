@@ -4,6 +4,7 @@ import "testing"
 
 func TestTrie(t *testing.T) {
 	trie := NewTrie()
+	trie.SeedTrieNumbers()
 
 	// Table of test cases
 	words := []struct {
@@ -18,6 +19,8 @@ func TestTrie(t *testing.T) {
 		{"cat", true, true},
 		{"dog", true, true},
 		{"fish", false, false}, // neither a word nor a prefix in the trie
+		{"one", true, true},
+		{"two", true, true},
 	}
 
 	// Insert words into the trie

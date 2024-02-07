@@ -1,12 +1,12 @@
 package main
 
 import (
-	"advent-of-code.com/2023/algos"
 	"bufio"
 	"fmt"
 	"io"
 	"os"
 	"strconv"
+	"strings"
 	"unicode"
 )
 
@@ -72,34 +72,23 @@ func getNums2(upstream chan string, downstream chan int) {
 		"eight": "8",
 		"nine":  "9",
 	}
-	trie := algos.NewTrie()
-	trie.SeedTrieNumbers()
-	var num []string
-	candidate := ""
-	count := 0
+	var nums []string
 	for line := range upstream {
 		// get first int
 		for i, char := range line {
 			if unicode.IsDigit(char) {
-				num = append(num, string(char))
+				nums = append(nums, string(char))
 			} else {
-				// Trie
-				count = i
-				candidate = string(char)
-				for trie.StartsWith(candidate) {
-					candidate += string(char)
-					if trie.Search(candidate) {
-						num = append(num, numMap[candidate])
-						candidate = ""
-						break
+				for key, val := range numMap {
+					if strings.HasPrefix(line[i:], key) {
+						nums = append(nums, val)
 					}
-					count++
 				}
-				candidate = ""
 			}
 		}
-		newNum := num[0] + num[len(num)-1]
+		newNum := nums[0] + nums[len(nums)-1]
 		realNum, _ := strconv.Atoi(newNum)
+		nums = []string{}
 		downstream <- realNum
 	}
 	close(downstream)
