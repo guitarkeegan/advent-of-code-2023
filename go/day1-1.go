@@ -14,7 +14,7 @@ import (
 func Trebuchet() int {
 	ch := make(chan string)
 	ch2 := make(chan int)
-	go getInput(ch)
+	go getTrebuchetInput(ch)
 	go getNums(ch, ch2)
 	return sumNums(ch2)
 }
@@ -23,7 +23,7 @@ func Trebuchet() int {
 func Trebuchet2() int {
 	ch := make(chan string)
 	ch2 := make(chan int)
-	go getInput(ch)
+	go getTrebuchetInput(ch)
 	go getNums2(ch, ch2)
 	return sumNums(ch2)
 }
@@ -94,7 +94,7 @@ func getNums2(upstream chan string, downstream chan int) {
 	close(downstream)
 }
 
-func getInput(ch chan string) {
+func getTrebuchetInput(ch chan string) {
 	file, err := os.Open("./inputs/day1")
 	if err != nil {
 		panic(err)
