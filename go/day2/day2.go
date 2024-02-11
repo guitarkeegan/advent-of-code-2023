@@ -9,12 +9,23 @@ import (
 	"unicode"
 )
 
+// part 1
+// func CubeConundrum(r, g, b int) int {
+// 	colorConditions := NewColors(r, g, b)
+// 	ch := make(chan string)
+// 	sumChan := make(chan int)
+// 	go getInput(ch)
+// 	go processV1(ch, colorConditions, sumChan)
+// 	return sumTotal(sumChan)
+// }
+
+// part 2
 func CubeConundrum(r, g, b int) int {
-	colorConditions := NewColors(r, g, b)
+	// colorConditions := NewColors(r, g, b)
 	ch := make(chan string)
 	sumChan := make(chan int)
 	go getInput(ch)
-	go processV1(ch, colorConditions, sumChan)
+	go processV2(ch, sumChan)
 	return sumTotal(sumChan)
 }
 
@@ -101,52 +112,94 @@ func cleanLine(line string, colIdx int) string {
 	return line
 }
 
-func processV1(ch chan string, conditions *Colors, sumChan chan int) {
-	curColors := NewValidator(0, *NewColors(0, 0, 0))
+func max(a, b int) int {
+	if a > b {
+		return a
+	}
+	return b
+}
+
+// part 2
+func processV2(ch chan string, sumChan chan int) {
+	validator := NewValidator(0, *NewColors(0, 0, 0))
 	for line := range ch {
-		// get the id value
-		colIdx := strings.Index(line, ":")
-		id, err := strconv.Atoi(line[5:colIdx])
-		if err != nil {
-			panic("couldn't get id!")
-		}
-		curColors.Id = id
-		// add colors to validator
-		cleanedLine := cleanLine(line, colIdx)
-		passed := true
-		curNum := ""
-		for _, char := range cleanedLine {
-			if unicode.IsNumber(char) {
-				curNum += string(char)
-				continue
+		idx := strings.Index(line, ":")
+		start := idx + 2
+		newLine := line[start:]
+		cur := ""
+		for i, v := range newLine {
+			if unicode.IsNumber(v) {
+				cur += string(v)
 			}
-			if unicode.IsLetter(char) {
-				curColors.AddColor(char, curNum)
-				ok := curColors.Validate(conditions.R, conditions.G, conditions.B)
-				if !ok {
-					fmt.Println(id)
-					curNum = ""
-					passed = false
-					curColors.Bag.Reset()
-					break
+			if unicode.IsLetter(v) {
+				if strings.HasPrefix(newLine[i:], "red") {
+					num, _ := strconv.Atoi(cur)
+					validator.Bag.R = max(validator.Bag.R, num)
 				}
-				curNum = ""
-				continue
-			}
-			if string(char) == ";" {
-				curNum = ""
-				curColors.Bag.Reset()
-			}
-		}
-		if passed {
-			ok := curColors.Validate(conditions.R, conditions.G, conditions.B)
-			if ok {
-				sumChan <- id
+				if strings.HasPrefix(newLine[i:], "green") {
+					num, _ := strconv.Atoi(cur)
+					validator.Bag.G = max(validator.Bag.G, num)
+				}
+				if strings.HasPrefix(newLine[i:], "blue") {
+					num, _ := strconv.Atoi(cur)
+					validator.Bag.B = max(validator.Bag.B, num)
+				}
+				cur = ""
 			}
 		}
+		sumChan <- validator.Bag.R * validator.Bag.G * validator.Bag.B
+		validator.Bag.Reset()
 	}
 	close(sumChan)
 }
+
+// part 1
+// func processV1(ch chan string, conditions *Colors, sumChan chan int) {
+// 	curColors := NewValidator(0, *NewColors(0, 0, 0))
+// 	for line := range ch {
+// 		// get the id value
+// 		colIdx := strings.Index(line, ":")
+// 		id, err := strconv.Atoi(line[5:colIdx])
+// 		if err != nil {
+// 			panic("couldn't get id!")
+// 		}
+// 		curColors.Id = id
+// 		// add colors to validator
+// 		cleanedLine := cleanLine(line, colIdx)
+// 		passed := true
+// 		curNum := ""
+// 		for _, char := range cleanedLine {
+// 			if unicode.IsNumber(char) {
+// 				curNum += string(char)
+// 				continue
+// 			}
+// 			if unicode.IsLetter(char) {
+// 				curColors.AddColor(char, curNum)
+// 				ok := curColors.Validate(conditions.R, conditions.G, conditions.B)
+// 				if !ok {
+// 					fmt.Println(id)
+// 					curNum = ""
+// 					passed = false
+// 					curColors.Bag.Reset()
+// 					break
+// 				}
+// 				curNum = ""
+// 				continue
+// 			}
+// 			if string(char) == ";" {
+// 				curNum = ""
+// 				curColors.Bag.Reset()
+// 			}
+// 		}
+// 		if passed {
+// 			ok := curColors.Validate(conditions.R, conditions.G, conditions.B)
+// 			if ok {
+// 				sumChan <- id
+// 			}
+// 		}
+// 	}
+// 	close(sumChan)
+// }
 
 func getInput(ch chan string) {
 	file, err := os.Open("inputs/day2")
